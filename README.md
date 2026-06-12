@@ -82,8 +82,6 @@ npm install
 - `undici`：请求 GitHub、AI 服务以及通过 v2rayN 等 HTTP 代理联网
 - `dotenv`：从 `.env` 文件加载 API Key 和服务配置
 
-`node_modules` 不应提交到 GitHub，其他使用者需要自行运行 `npm install`。
-依赖版本记录在 `package-lock.json` 中。
 
 ### 3. 创建环境配置
 
@@ -130,7 +128,6 @@ AI_API_KEY=sk-xxxxxxxxxxxxxxxx
 如果暂时没有 AI API Key，也可以将 `AI_API_KEY` 留空。项目仍然可以运行，
 但会使用规则评分，无法生成完整的 AI 项目画像和诊断。
 
-`.env` 已加入 `.gitignore`，不要把真实 API Key 提交到仓库。
 
 ## 运行
 
