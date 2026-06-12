@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GitHub 公开仓库健康度分析与 AI 评分">
+  <title>RepoScope · GitHub 仓库体检</title>
+  <link rel="stylesheet" href="/styles.css?v=20260611-5">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="RepoScope 首页">
+      <span class="brand-mark">R</span>
+      <span>RepoScope</span>
+    </a>
+    <div class="status-pill"><span class="status-dot"></span> GitHub Public API</div>
+  </header>
+
+  <main>
+    <section class="hero" id="hero">
+      <div class="eyebrow">Repository intelligence / 01</div>
+      <h1>给你的 GitHub 仓库<br><em>做一次深度体检</em></h1>
+      <p class="hero-copy">从活跃度、工程实践、社区生态到 AI 综合判断，把分散的数据变成一份清晰、可信的项目报告。</p>
+      <form class="search-box" id="repo-form">
+        <div class="input-wrap">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.009-.866-.014-1.7-2.782.604-3.369-1.341-3.369-1.341-.455-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.071 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.091-.646.349-1.087.635-1.337-2.221-.253-4.555-1.111-4.555-4.943 0-1.092.39-1.984 1.029-2.683-.103-.253-.446-1.269.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.833a9.59 9.59 0 012.504.337c1.909-1.294 2.748-1.025 2.748-1.025.546 1.378.203 2.394.1 2.647.64.699 1.028 1.591 1.028 2.683 0 3.842-2.337 4.687-4.566 4.935.359.309.679.92.679 1.855 0 1.338-.012 2.419-.012 2.748 0 .267.18.578.688.48A10.003 10.003 0 0022 12c0-5.523-4.477-10-10-10z"/></svg>
+          <input id="repo-url" name="url" type="text" autocomplete="url" spellcheck="false" placeholder="https://github.com/owner/repository" value="https://github.com/jerry-ai-dev/MODULAR-RAG-MCP-SERVER" aria-label="GitHub 仓库 URL">
+        </div>
+        <button type="submit" id="analyze-button"><span>开始体检</span><span class="arrow">↗</span></button>
+      </form>
+      <div class="form-meta"><span>无需登录 · 仅分析公开仓库</span><span id="ai-status">正在检查 AI 服务...</span></div>
+      <div class="error-message" id="error" role="alert"></div>
+    </section>
+
+    <section class="loading-panel hidden" id="loading" aria-live="polite">
+      <div class="scanner">
+        <div class="scan-line"></div>
+        <span>SCANNING</span>
+      </div>
+      <div>
+        <h2>正在读取仓库信号</h2>
+        <p id="loading-copy">连接 GitHub，聚合项目元数据...</p>
+      </div>
+    </section>
+
+    <section class="report hidden" id="report">
+      <div class="report-header">
+        <div class="repo-identity">
+          <img id="repo-avatar" alt="">
+          <div>
+            <div class="eyebrow">Health report / <span id="generated-date"></span></div>
+            <h2><span id="repo-owner"></span><b>/</b><span id="repo-name"></span></h2>
+            <p id="repo-description"></p>
+          </div>
+        </div>
+        <a class="github-link" id="github-link" target="_blank" rel="noopener">查看仓库 ↗</a>
+      </div>
+
+      <div class="dashboard-grid">
+        <article class="card overview-card">
+          <div class="overview-orbit overview-orbit-one"></div>
+          <div class="overview-orbit overview-orbit-two"></div>
+          <div class="card-label"><span class="section-number">01</span> 项目画像 <span id="overview-source">README + AI</span></div>
+          <div class="overview-heading">
+            <div>
+              <div class="overview-badges">
+                <span class="profile-badge profile-badge-dark" id="project-type"></span>
+                <span class="profile-badge profile-badge-acid" id="project-maturity"></span>
+              </div>
+              <p class="overview-summary" id="overview-summary"></p>
+              <p class="overview-positioning" id="overview-positioning"></p>
+            </div>
+            <div class="overview-monogram" aria-hidden="true"><span>R</span><small>PROFILE</small></div>
+          </div>
+          <div class="repo-facts" id="repo-facts"></div>
+          <div class="topic-strip">
+            <span class="topic-label">TECH SIGNALS</span>
+            <div class="topic-list" id="topic-list"></div>
+          </div>
+          <div class="overview-grid">
+            <div><h3>主要功能</h3><ul id="core-features"></ul></div>
+            <div><h3>技术亮点</h3><ul id="tech-highlights"></ul></div>
+            <div><h3>适用对象</h3><ul id="target-users"></ul></div>
+            <div><h3>典型场景</h3><ul id="use-cases"></ul></div>
+          </div>
+        </article>
+
+        <article class="card score-card">
+          <div class="card-label">AI 综合评分 <span id="score-source"></span></div>
+          <div class="score-layout">
+            <div class="score-ring" id="score-ring">
+              <div><strong id="score-number">0</strong><span>/ 100</span></div>
+            </div>
+            <div class="grade-block"><span>评级</span><strong id="score-grade">-</strong><p id="score-verdict"></p></div>
+          </div>
+          <p class="score-summary" id="score-summary"></p>
+        </article>
+
+        <article class="card metrics-card">
+          <div class="card-label">核心指标 <span>LIVE</span></div>
+          <div class="metrics-grid" id="metrics-grid"></div>
+        </article>
+
+        <article class="card dimensions-card">
+          <div class="card-label">五维健康度 <span id="methodology"></span></div>
+          <div id="dimensions"></div>
+        </article>
+
+        <article class="card dimension-analysis-card">
+          <div class="card-label">逐维诊断 <span>AI + EVIDENCE</span></div>
+          <div id="dimension-analysis" class="dimension-analysis"></div>
+        </article>
+
+        <article class="card language-card">
+          <div class="card-label">语言构成</div>
+          <div class="language-layout">
+            <div class="donut" id="language-donut"><div><strong id="language-count">0</strong><span>种语言</span></div></div>
+            <div class="language-list" id="language-list"></div>
+          </div>
+        </article>
+
+        <article class="card insight-card">
+          <div class="card-label">AI 诊断结论</div>
+          <div class="insight-columns">
+            <div><h3><span class="insight-icon good">+</span>优势信号</h3><ul id="strengths"></ul></div>
+            <div><h3><span class="insight-icon warn">!</span>风险关注</h3><ul id="risks"></ul></div>
+            <div><h3><span class="insight-icon idea">→</span>改进建议</h3><ul id="suggestions"></ul></div>
+          </div>
+        </article>
+
+        <article class="card activity-card">
+          <div class="card-label">近期提交</div>
+          <div id="commit-list" class="commit-list"></div>
+        </article>
+
+        <article class="card checklist-card">
+          <div class="card-label">工程健康清单</div>
+          <div id="health-list" class="health-list"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer><span>RepoScope / GitHub repository intelligence</span><span>数据来自 GitHub 公开 API · AI 结论仅供参考</span></footer>
+  <script src="/app.js?v=20260611-4" defer></script>
+</body>
+</html>

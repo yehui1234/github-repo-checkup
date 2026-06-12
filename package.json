@@ -1,0 +1,18 @@
+{
+  "name": "github-repo-checkup",
+  "version": "1.0.0",
+  "private": true,
+  "description": "GitHub repository health check dashboard with explainable AI scoring",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "dotenv": "^16.6.1",
+    "undici": "^6.26.0"
+  }
+}
